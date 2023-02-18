@@ -6,14 +6,27 @@
 </head>
 <body>
 <h1>Salam</h1>
+<label for="name">
+    Name:<input type="text" name="name" id="name">
+    <button id="send">Say hello!</button>
+</label>
+<ul id="list"></ul>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io();
-    socket.emit('socketping');
-    socket.on('socketpong', () => {
-        console.log('socketpong')
-        setTimeout(() => socket.emit('socketping'), 5000);
+    const socket = io({transports:['websocket'], upgrade: false});
+
+    const addListElt = (message) => {
+        let li = document.createElement('li');
+        li.appendChild(document.createTextNode(message))
+        document.querySelector('#list').appendChild(li)
+    }
+    document.getElementById('send').addEventListener('click', (e) => {
+        socket.emit('name', document.getElementById('name').value);
     })
+    socket.on('name', (name) => {
+        addListElt(name + ' says hello!')
+    })
+    socket.on('user.events', addListElt)
 </script>
 </body>
 </html>
