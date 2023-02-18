@@ -12,5 +12,10 @@ app.use(express.static('static'))
 
 io.on('connection', function (socket) {
     console.log('a socket is opened');
-    console.log(socket);
+    //console.log(socket);
+
+    socket.on('socketping', () => {
+        console.log('Received socketping, sending socketpong')
+        socket.emit('socketpong');
+    })
 });
